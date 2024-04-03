@@ -23,7 +23,7 @@ class AddBook extends StatelessWidget {
     }
   } //****************** Adding Book **************************/
 
-  Future<void> updateBook(int id) async {
+  Future<void> editBook(int id) async {
     Book book = Book.withID(
       id,
       bookNameController.text,
@@ -44,7 +44,7 @@ class AddBook extends StatelessWidget {
     bookNameController.text = book.first.bookName;
     authorNameController.text = book.first.authorName;
     priceController.text = book.first.price.toString();
-  }
+  } // *************** fill data to textfield *******************/
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +102,7 @@ class AddBook extends StatelessWidget {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: () async {
-                  bookID == null ? await addBook() : await updateBook(bookID);
+                  bookID == null ? await addBook() : await editBook(bookID);
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
