@@ -1,5 +1,7 @@
 import 'package:book_store/database_helper/database_helper.dart';
+import 'package:book_store/model/book.dart';
 import 'package:book_store/screen/add_book.dart';
+import 'package:book_store/utility/search_book.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
@@ -35,13 +37,21 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         backgroundColor: Colors.orange,
         title: const Text('Book Store'),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              List<Book> allBook = await helper.getAllBook();
+              showSearch(context: context, delegate: SearchBook(allBook));
+            },
+            icon: const Icon(Icons.search),
+          ),
+        ],
       ),
       floatingActionButton: IconButton(
         onPressed: () async {
           await Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => AddBook(),
-              settings: const RouteSettings(arguments: null),
+              builder: (context) => const AddBook(null),
             ),
           );
           setState(() {});
@@ -84,22 +94,33 @@ class _HomeState extends State<Home> {
                             ),
                             subtitle: Text(
                                 '\$ ${snapshot.data![index].price.toString()}'),
-                            trailing: IconButton(
-                              icon: const Icon(
-                                Icons.edit_square,
-                              ),
-                              onPressed: () async {
-                                await Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => AddBook(),
-                                    settings: RouteSettings(
-                                      arguments:
-                                          snapshot.data![index].id.toString(),
-                                    ),
+                            trailing: SizedBox(
+                              width: 100,
+                              child: Row(
+                                children: [
+                                  IconButton(
+                                    icon:
+                                        const Icon(Icons.edit_square, size: 30),
+                                    onPressed: () async {
+                                      await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              AddBook(snapshot.data![index]),
+                                        ),
+                                      );
+                                      setState(() {});
+                                    },
                                   ),
-                                );
-                                setState(() {});
-                              },
+                                  IconButton(
+                                    onPressed: () async {
+                                      await helper
+                                          .deleteBook(snapshot.data![index].id);
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(Icons.delete, size: 30),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );

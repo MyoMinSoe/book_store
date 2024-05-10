@@ -42,28 +42,21 @@ class DatabaseHelper {
     return listmap.map((e) => Book.fromMap(e)).toList();
   }
 
-  Future<List<Book>> getBook(id) async {
-    Database db = await getDatabase();
-    List<Map<String, dynamic>> listmap = await db.query(
-      tableName,
-      // columns: [
-      //   'id',
-      //   'bookName',
-      //   'authorName',
-      //   'price',
-      // ],
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-    return listmap.map((e) => Book.fromMap(e)).toList();
-  }
-
   Future<int> updateBook(Book book, id) async {
     Database db = await getDatabase();
     return db.update(
       tableName,
       book.toMap(),
       where: '$column_id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int> deleteBook(id) async {
+    Database db = await getDatabase();
+    return await db.delete(
+      tableName,
+      where: 'id = ?',
       whereArgs: [id],
     );
   }
